@@ -276,6 +276,9 @@ class visualiser {
         echo \html_writer::end_div(); // Closing tag for the .tool_dataflow-top-bar div.
         echo '<div class="clearfix"></div>';
 
+        // Show description. Limit width for readability.
+        echo \html_writer::div(format_text($dataflow->description), '', ['style' => 'max-width: 600px']);
+
         // Generate the image based on the DOT script.
         $contents = self::generate($dataflow->get_dotscript(), 'svg');
 
