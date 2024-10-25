@@ -86,11 +86,17 @@ class tool_dataflows_flow_transformer_regex_test extends \advanced_testcase {
      *
      * @dataProvider regex_provider
      * @covers \tool_dataflows\local\step\flow_transformer_regex
-     * @param array $data
+     * @param array|string $data
      * @param array $config
-     * @param array $expected
+     * @param array|string $expected
      */
-    public function test_regex(array $data, array $config, array $expected) {
+    public function test_regex($data, array $config, $expected) {
+        // Add default 'field' value.
+        $config['field'] = '${{steps.reader.record.test}}';
+
+        // Convert single test data to array format.
+        $expected = is_array($expected) ? $expected : [['test' => $data, 'regex' => $expected]];
+        $data = is_array($data) ? $data : [['test' => $data]];
 
         // Perform the test.
         set_config('permitted_dirs', $this->basedir, 'tool_dataflows');
@@ -111,17 +117,29 @@ class tool_dataflows_flow_transformer_regex_test extends \advanced_testcase {
      * @return array[]
      */
     public static function regex_provider(): array {
-        return [
-            [self::TEST_DATA, self::CONFIG, self::EXPECTED],
-            [
-                [['test' => '1,2,3,4,5,6,7,8,9']],
-                [
-                    'field' => '${{steps.reader.record.test}}',
-                    'pattern' => '/4\,5\,6/',
-                ],
-                [['test' => '1,2,3,4,5,6,7,8,9', 'regex' => '4,5,6']],
-            ],
-        ];
+        $testcases = [];
+
+        // Add testcases here.
+        // format:
+        // ['test' => <test string>, ['pattern' => <regex>, (optional) 'replacenull' => <0 or 1>], 'expected' => <expected value>].
+
+        $testcases[] = [ self::TEST_DATA, self::CONFIG, self::EXPECTED ];
+
+        // Test cases for 'match'.
+        $testcases[] = ['test' => '1,2,3,4,5,6,7,8,9', ['pattern' => '/4\,5\,6/'], 'expected' => '4,5,6'];
+
+        // Test cases for 'replace'.
+        $testcases[] = ['test' => 'hello earth', ['pattern' => 's/earth/world/g'], 'expected' => 'hello world'];
+        $testcases[] = ['test' => 'hello earth world', ['pattern' => 's/\searth//g'], 'expected' => 'hello world'];
+        $testcases[] = ['test' => 'ab123fg', ['pattern' => 's/123/cde/'], 'expected' => 'abcdefg'];
+
+        // Test case for null value.
+        // Without empty string substitution (replacenull) the 'field' value is returned.
+        $testcases[] = ['test' => null, ['pattern' => 's/any/pattern/', 'replacenull' => 0],
+            'expected' => '${{steps.reader.record.test}}'];
+        $testcases[] = ['test' => null, ['pattern' => 's/any/pattern/', 'replacenull' => 1], 'expected' => ''];
+
+        return $testcases;
     }
 
     /**

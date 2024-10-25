@@ -524,6 +524,8 @@ $string['flow_transformer_regex:pattern'] = 'Regex pattern';
 $string['flow_transformer_regex:pattern_help'] = "Checked against the input field. The first match will be set on the record using this step's alias as the key. Named capture groups are used instead, if set.";
 $string['flow_transformer_regex:field'] = 'Input field';
 $string['flow_transformer_regex:field_help'] = "This field must be a string that will be processed using the regex pattern";
+$string['flow_transformer_regex:replacenull'] = 'Replace null with empty string';
+$string['flow_transformer_regex:replacenull_help'] = "Replaces input values that are null with empty string. Otherwise null values are ignored.";
 
 // Wait connector.
 $string['connector_wait:timesec'] = 'Time in seconds';

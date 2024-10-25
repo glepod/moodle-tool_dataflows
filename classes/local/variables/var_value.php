@@ -192,6 +192,20 @@ class var_value extends var_node {
         foreach ($this->references as $name => $obj) {
             $value = $obj->get_resolved(false);
 
+            // This function is called during initialisation and when processing steps.
+            // Check if a step is being processed with specific null handling.
+            if (is_null($value)) {
+                if (get_class($this->parent) === var_step::class) {
+                    $step = $this->parent;
+
+                    // Currently only option is to replace the null with an empty string.
+                    $replacenull = $step->stepdef->config->replacenull;
+                    if ($replacenull) {
+                        $value = '';
+                    }
+                }
+            }
+
             // Do not add the value if it is not set. This should result in the expression remaining unresolved in the evalutaion.
             if (is_null($value)) {
                 continue;

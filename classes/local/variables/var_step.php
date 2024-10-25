@@ -62,4 +62,27 @@ class var_step extends var_object_visible {
             $this->set("states.$state", null);
         }
     }
+
+    /**
+     * Magic getter - which allows the user to get values directly instead of via ->get('name')
+     *
+     * @param      string $name of the property to get
+     * @return     mixed
+     */
+    public function __get($name) {
+        $methodname = 'get_' . $name;
+        if (method_exists($this, $methodname)) {
+            return $this->$methodname();
+        }
+        return $this->get($name);
+    }
+
+    /**
+     * Gets the stepdef.
+     *
+     * @return step
+     */
+    private function get_stepdef(): step {
+        return $this->stepdef;
+    }
 }

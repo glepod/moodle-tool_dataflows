@@ -43,6 +43,7 @@ class flow_transformer_regex extends flow_transformer_step {
         return [
             'pattern' => ['type' => PARAM_RAW, 'required' => true],
             'field' => ['type' => PARAM_TEXT, 'required' => true],
+            'replacenull' => ['type' => PARAM_BOOL, 'required' => true],
         ];
     }
 
@@ -82,6 +83,17 @@ class flow_transformer_regex extends flow_transformer_step {
             '',
             get_string('flow_transformer_regex:field_help', 'tool_dataflows')
         );
+        $mform->addElement(
+            'checkbox',
+            'config_replacenull',
+            get_string('flow_transformer_regex:replacenull', 'tool_dataflows')
+        );
+        $mform->addElement(
+            'static',
+            'config_replacenull_help',
+            '',
+            get_string('flow_transformer_regex:replacenull_help', 'tool_dataflows')
+        );
     }
 
     /**
@@ -95,7 +107,90 @@ class flow_transformer_regex extends flow_transformer_step {
         $pattern = $this->stepdef->config->pattern;
         $field = $this->stepdef->config->field;
         $haystack = $variables->evaluate($field);
+        $hasnamedcapturegroups = false;
+
+        // Get options from pattern. SED style regex to seperate match and replace parameters.
+        // TODO: add support for flags eg. /g /m (global, multi-line etc).
+        [$replace, $pattern, $flags] = self::get_pattern_options($pattern);
+
+        // Process either match or replace.
+        if ($replace) {
+            $result = self::regex_replace($pattern, $haystack);
+        } else {
+            [$hasnamedcapturegroups, $result] = self::regex_match($pattern, $haystack);
+        }
+
+        // Support named capture groups.
+        // Otherwise set the first match (or null) to the field named as the step alias.
+        if ($hasnamedcapturegroups) {
+            $input = (object) array_merge(
+                (array) $input, $result);
+        } else {
+            $uniquekey = $variables->get('alias');
+            $input->$uniquekey = $result[0];
+        }
+
+        return $input;
+    }
+
+    /**
+     * Gets match and replace parameters from SED style regex.
+     * This determines if preg_match or preg_replace is used.
+     * @param string $fullpattern SED style regex
+     * @return array match and replace parameters
+     */
+    private function get_pattern_options(string $fullpattern): array {
         $matches = [];
+        $pattern = '/(.*?)(\/.*\/)(.*)/';
+        preg_match($pattern, $fullpattern, $matches);
+        // Having a 's/' at the start of the pattern denotes search and replace.
+        // eg 's/<search regex>/<replacement>/<flags>'.
+        $replace = $matches[1] === 's';
+        $pattern = $matches[2];
+        $flags = $matches[3];
+
+        return [$replace, $pattern, $flags];
+    }
+
+    /**
+     * Gets the search and replace parameters from the fullpattern.
+     * @param string $fullpattern SED style regex
+     * @return array search and replace parameters
+     */
+    private function get_pattern_substitution(string $fullpattern): array {
+        $matches = [];
+        $pattern = '/(.*[^\\\\]\/)(.*)\//';
+        preg_match($pattern, $fullpattern, $matches);
+        $pattern = $matches[1];
+        $substitution = $matches[2];
+
+        return [$pattern, $substitution];
+    }
+
+    /**
+     * Process regex search and replace and returns result.
+     * @param string $pattern
+     * @param string $haystack
+     * @return array Results of the regex search and replace
+     */
+    private function regex_replace(string $pattern, string $haystack): array {
+        $result = [];
+        [$pattern, $substitution] = self::get_pattern_substitution($pattern);
+
+        $result[] = preg_replace($pattern, $substitution, $haystack);
+        return $result;
+    }
+
+    /**
+     * Process regex matches and returns results.
+     * @param string $pattern
+     * @param string $haystack
+     * @return array Results of the regex match
+     */
+    private function regex_match(string $pattern, string $haystack): array {
+        $matches = [];
+        $result = [];
+
         preg_match($pattern, $haystack, $matches);
 
         // Support named capture groups.
@@ -106,16 +201,15 @@ class flow_transformer_regex extends flow_transformer_step {
             }
 
             $hasnamedcapturegroups = true;
-            $input->$key = $value;
+            $result[$key] = $value;
         }
 
         // Otherwise set the first match (or null) to the field named as the step alias.
         if (!$hasnamedcapturegroups) {
             // Capture the first matched string as a variable.
-            $uniquekey = $variables->get('alias');
-            $input->$uniquekey = $matches[0] ?? null;
+            $result[] = $matches[0] ?? null;
         }
 
-        return $input;
+        return [$hasnamedcapturegroups, $result];
     }
 }
