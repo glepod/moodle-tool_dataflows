@@ -140,7 +140,7 @@ class tool_dataflows_variables_test extends \advanced_testcase {
         // Expecting it to throw an exception during execution, particularly
         // when preparing the SQL and finding out it contains an unparsed
         // expression.
-        $this->compatible_expectError();
+        $this->expectException(\TypeError::class);
         try {
             $engine->execute();
         } finally {
