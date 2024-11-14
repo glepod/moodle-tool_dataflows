@@ -85,9 +85,9 @@ class tool_dataflows_connector_curl_test extends \advanced_testcase {
         $this->assertEquals('3d188fbf-d0b7-4d4e-ae4d-4b5548df824e', $result->uuid);
 
         $this->assertEquals(200, $vars->httpcode);
-        $this->assertObjectHasAttribute('connecttime', $vars);
-        $this->assertObjectHasAttribute('totaltime', $vars);
-        $this->assertObjectHasAttribute('sizeupload', $vars);
+        $this->assertObjectHasProperty('connecttime', $vars);
+        $this->assertObjectHasProperty('totaltime', $vars);
+        $this->assertObjectHasProperty('sizeupload', $vars);
 
         $testurl = $this->get_mock_url('/test_post.php');
 
@@ -115,9 +115,9 @@ class tool_dataflows_connector_curl_test extends \advanced_testcase {
         $vars = $engine->get_variables_root()->get('steps.connector.vars');
 
         $this->assertEquals(200, $vars->httpcode);
-        $this->assertObjectHasAttribute('connecttime', $vars);
-        $this->assertObjectHasAttribute('totaltime', $vars);
-        $this->assertObjectHasAttribute('sizeupload', $vars);
+        $this->assertObjectHasProperty('connecttime', $vars);
+        $this->assertObjectHasProperty('totaltime', $vars);
+        $this->assertObjectHasProperty('sizeupload', $vars);
 
         // Tests put method.
         $stepdef->config = Yaml::dump([
@@ -145,9 +145,9 @@ class tool_dataflows_connector_curl_test extends \advanced_testcase {
 
         // PUT has no response body so it shouldn't be checked.
         $this->assertEquals(200, $vars->httpcode);
-        $this->assertObjectHasAttribute('connecttime', $vars);
-        $this->assertObjectHasAttribute('totaltime', $vars);
-        $this->assertObjectHasAttribute('sizeupload', $vars);
+        $this->assertObjectHasProperty('connecttime', $vars);
+        $this->assertObjectHasProperty('totaltime', $vars);
+        $this->assertObjectHasProperty('sizeupload', $vars);
 
         $expectedbash = "curl -s -X PUT {$testurl} --max-time 30 --data-raw 'data=moodletest'";
         $this->assertEquals($expectedbash, $variables->dbgcommand);
