@@ -39,6 +39,6 @@ class after_config {
     public static function callback(\core\hook\after_config $hook): void {
         global $CFG;
 
-        require_once ($CFG->dirroot. '/admin/tool/dataflows/lib.php');
+        require_once($CFG->dirroot. '/admin/tool/dataflows/lib.php');
     }
 }
