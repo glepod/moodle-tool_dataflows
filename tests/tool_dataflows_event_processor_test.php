@@ -36,6 +36,37 @@ require_once(dirname(__FILE__) . '/../lib.php');
 class tool_dataflows_event_processor_test extends \advanced_testcase {
 
     /**
+     * Test workflow.
+     * @var \tool_dataflows\dataflow
+     */
+    protected $dataflow;
+
+    /**
+     * Test writer.
+     * @var
+     */
+    protected $writer;
+
+    /**
+     * Test reader.
+     * @var
+     */
+    protected $reader;
+
+    /**
+     * Test course.
+     *
+     * @var \stdClass
+     */
+    protected $course;
+
+    /**
+     * Test output path.
+     * @var
+     */
+    protected $outputpath;
+
+    /**
      * Set up before each test
      */
     protected function setUp(): void {

@@ -37,6 +37,42 @@ require_once(dirname(__FILE__) . '/../lib.php');
 class tool_dataflows_json_reader_test extends \advanced_testcase {
 
     /**
+     * Test workflow.
+     * @var \tool_dataflows\dataflow
+     */
+    protected $dataflow;
+
+    /**
+     * Test writer.
+     * @var
+     */
+    protected $writer;
+
+    /**
+     * Test reader.
+     * @var
+     */
+    protected $reader;
+
+    /**
+     * Test input path.
+     * @var false|string
+     */
+    protected $inputpath;
+
+    /**
+     * Test output path.
+     * @var
+     */
+    protected $outputpath;
+
+    /**
+     * Test users.
+     * @var
+     */
+    protected $users;
+
+    /**
      * Set up before each test
      */
     protected function setUp(): void {

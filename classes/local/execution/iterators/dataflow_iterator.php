@@ -49,6 +49,16 @@ class dataflow_iterator implements iterator {
     protected $iterationcount = 0;
 
     /**
+     * @var \tool_dataflows\local\variables\var_step|null
+     */
+    protected $stepvars = null;
+
+    /**
+     * @var null
+     */
+    protected $pulled = null;
+
+    /**
      * Create an instance of this class.
      *
      * @param flow_engine_step $step The step the iterator is for.
