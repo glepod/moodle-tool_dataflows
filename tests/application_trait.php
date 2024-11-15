@@ -104,7 +104,7 @@ trait application_trait {
         if (method_exists($this, 'assertMatchesRegularExpression')) {
             $this->assertMatchesRegularExpression($pattern, $string, $message);
         } else {
-            $this->assertRegExp($pattern, $string, $message);
+            $this->assertDoesNotMatchRegularExpression($pattern, $string, $message);
         }
     }
 
@@ -119,18 +119,7 @@ trait application_trait {
         if (method_exists($this, 'assertDoesNotMatchRegularExpression')) {
             $this->assertDoesNotMatchRegularExpression($pattern, $string, $message);
         } else {
-            $this->assertNotRegExp($pattern, $string, $message);
-        }
-    }
-
-    /**
-     * Asserts that an error was expected
-     */
-    public function compatible_expectError(): void {
-        if (method_exists($this, 'expectError')) {
-            $this->expectError();
-        } else {
-            $this->expectException(\PHPUnit\Framework\Error\Error::class);
+            $this->assertDoesNotMatchRegularExpression($pattern, $string, $message);
         }
     }
     // @codingStandardsIgnoreEnd

@@ -57,6 +57,12 @@ class step extends persistent {
     /** @var array array for lazy loading step dependants */
     private $dependents = null;
 
+    /** @var dataflow Dataflow */
+    protected $dataflow = null;
+
+    /** @var base_step step type */
+    protected $steptype;
+
     /**
      * Return the definition of the properties of this model.
      *
@@ -495,7 +501,7 @@ class step extends persistent {
         // Update the local dependencies to the database.
         $this->update_depends_on();
 
-        $this->steptype->on_save();
+        $this->get_steptype()->on_save();
         $this->get_dataflow()->on_steps_save();
 
         return $this;
@@ -628,7 +634,7 @@ class step extends persistent {
         $DB->delete_records('tool_dataflows_step_depends', ['stepid' => $this->id]);
         $DB->delete_records('tool_dataflows_step_depends', ['dependson' => $this->id]);
 
-        $steptype = $this->steptype;
+        $steptype = $this->get_steptype();
         if (isset($steptype)) {
             $steptype->on_delete();
         }
@@ -728,7 +734,7 @@ class step extends persistent {
             return new \lang_string('invalidyaml', 'tool_dataflows');
         }
 
-        $validation = $this->steptype->validate_config($yaml);
+        $validation = $this->get_steptype()->validate_config($yaml);
         if ($validation !== true) {
             // NOTE: This will only return the first error as the persistent
             // class expects the return value to be an instance of lang_string.
@@ -748,7 +754,7 @@ class step extends persistent {
      */
     protected function validate_link_count(int $count, string $inputoutput, string $flowconnector) {
         $fn = "get_number_of_{$inputoutput}_{$flowconnector}s";
-        $steptype = $this->steptype;
+        $steptype = $this->get_steptype();
         [$min, $max] = $steptype->$fn();
         if ($inputoutput === 'output') {
             $min = max($min, count($steptype->get_output_labels()));
@@ -778,7 +784,7 @@ class step extends persistent {
         $count = count($deps);
         $errors = [];
 
-        $steptype = $this->steptype;
+        $steptype = $this->get_steptype();
 
         if ($count != 0) {
             $dep = array_shift($deps);
@@ -877,7 +883,7 @@ class step extends persistent {
         if ($typevalidation !== true) {
             return false;
         }
-        return $this->steptype->has_side_effect();
+        return $this->get_steptype()->has_side_effect();
     }
 
     /**

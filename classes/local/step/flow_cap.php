@@ -34,6 +34,12 @@ use tool_dataflows\local\execution\iterators\dataflow_iterator;
 final class flow_cap extends flow_step {
 
     /**
+     * Upstream interator.
+     * @var
+     */
+    protected $upstream;
+
+    /**
      * Generates an engine step for this type.
      *
      * @param engine $engine

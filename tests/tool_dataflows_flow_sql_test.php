@@ -34,6 +34,41 @@ require_once(dirname(__FILE__) . '/../lib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_dataflows_flow_sql_test extends \advanced_testcase {
+    /**
+     * Test workflow.
+     * @var \tool_dataflows\dataflow
+     */
+    protected $dataflow;
+
+    /**
+     * Test writer.
+     * @var
+     */
+    protected $writer;
+
+    /**
+     * Test reader.
+     * @var
+     */
+    protected $reader;
+
+    /**
+     * Test input path.
+     * @var false|string
+     */
+    protected $inputpath;
+
+    /**
+     * Test output path.
+     * @var
+     */
+    protected $outputpath;
+
+    /**
+     * Test flow step.
+     * @var \tool_dataflows\step
+     */
+    protected $flow;
 
     /**
      * Set up before each test

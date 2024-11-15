@@ -35,6 +35,17 @@ require_once(dirname(__FILE__) . '/../lib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_dataflows_reader_csv_test extends \advanced_testcase {
+    /**
+     * Test writer.
+     * @var
+     */
+    protected $writer;
+
+    /**
+     * Test reader.
+     * @var
+     */
+    protected $reader;
 
     /**
      * Set up before each test
