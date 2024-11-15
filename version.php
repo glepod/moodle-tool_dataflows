@@ -25,11 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2024101000;
-$plugin->release = 2024101000;
-$plugin->requires = 2022112800;    // Our lowest supported Moodle (3.3.0).
+$plugin->version = 2024111500;
+$plugin->release = 2024111500;
+$plugin->requires = 2024100700;    // Our lowest supported Moodle (4.5.0).
 $plugin->supported = [405, 405];
-// TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
 $plugin->component = 'tool_dataflows';
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->dependencies = [];
