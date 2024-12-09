@@ -175,7 +175,8 @@ trait sql_trait {
      */
     public static function form_define_fields(): array {
         return [
-            'sql' => ['type' => PARAM_TEXT, 'required' => true],
+            // Must be PARAM_RAW to avoid clean_param mangling the sql.
+            'sql' => ['type' => PARAM_RAW, 'required' => true],
         ];
     }
 
