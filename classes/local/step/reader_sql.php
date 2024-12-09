@@ -48,7 +48,8 @@ class reader_sql extends reader_step {
      */
     public static function form_define_fields(): array {
         return [
-            'sql' => ['type' => PARAM_TEXT, 'required' => true],
+            // Must be PARAM_RAW to avoid clean_param mangling the sql.
+            'sql' => ['type' => PARAM_RAW, 'required' => true],
             'counterfield' => ['type' => PARAM_TEXT],
             'countervalue' => ['type' => PARAM_TEXT],
         ];
