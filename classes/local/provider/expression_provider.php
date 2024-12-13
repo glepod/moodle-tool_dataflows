@@ -75,6 +75,7 @@ class expression_provider implements ExpressionFunctionProviderInterface {
             ExpressionFunction::fromPhp('count', 'count'),
             ExpressionFunction::fromPhp('format_time', 'format_time'),
             ExpressionFunction::fromPhp('round', 'round'),
+            ExpressionFunction::fromPhp('floor', 'floor'),
             ExpressionFunction::fromPhp('time', 'time'),
             ExpressionFunction::fromPhp('userdate', 'userdate'),
             ExpressionFunction::fromPhp('date', 'date'),
