@@ -47,17 +47,13 @@ require_capability('tool/dataflows:managedataflows', $context);
 
 // Configure any table specifics.
 $table = new runs_table('dataflow_runs_table');
+$ufields = \core_user\fields::for_name()->get_sql('usr', false, '', '', false)->selects;
+
 $sqlfields = 'run.id,'
             // Cast the name as a real number so it can be correctly sorted.
             . $DB->sql_cast_char2real('run.name') . ' as name,'
             // Fetch user name fields (for display purposes).
-            . get_all_user_name_fields(
-                $returnsql = true,
-                $tableprefix = 'usr',
-                $prefix = null,
-                $fieldprefix = null,
-                $order = false
-            ) . ',
+            . $ufields . ',
               run.dataflowid,
               run.userid,
               run.status,
