@@ -83,6 +83,9 @@ class expression_provider implements ExpressionFunctionProviderInterface {
             ExpressionFunction::fromPhp('strtotime', 'strtotime'),
             ExpressionFunction::fromPhp('strtolower', 'strtolower'),
             ExpressionFunction::fromPhp('intval', 'intval'),
+            ExpressionFunction::fromPhp('str_replace', 'str_replace'),
+            ExpressionFunction::fromPhp('array_column', 'array_column'),
+            ExpressionFunction::fromPhp('array_combine', 'array_combine'),
         ];
     }
 }
